@@ -51,6 +51,7 @@ class DBProvider {
   }
 
   //=========================SELECT=========================
+
   Future<ScanModel> getScanId(int id) async {
     final db = await database;
     final res = await db.query('Scans', where: 'id = ?', whereArgs: [id]);
@@ -74,5 +75,15 @@ class DBProvider {
     List<ScanModel> list =
         res.isNotEmpty ? res.map((e) => ScanModel.fromJson(e)).toList() : [];
     return list;
+  }
+
+  //==========================UPDATE==========================
+
+  Future<int> updateScan(ScanModel newScan) async {
+    final db = await database;
+
+    final res = await db.update('Scans', newScan.toJson(),
+        where: 'id = ?', whereArgs: [newScan.id]);
+    return res;
   }
 }
