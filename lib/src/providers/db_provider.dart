@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:qrreaderapp/src/models/scan_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
+import 'package:qrreaderapp/src/models/scan_model.dart';
+export 'package:qrreaderapp/src/models/scan_model.dart';
 
 class DBProvider {
   static Database _database;
@@ -81,9 +82,25 @@ class DBProvider {
 
   Future<int> updateScan(ScanModel newScan) async {
     final db = await database;
-
     final res = await db.update('Scans', newScan.toJson(),
         where: 'id = ?', whereArgs: [newScan.id]);
+
+    return res;
+  }
+
+  //===========================DELETE===========================
+
+  Future<int> deleteScan(int id) async {
+    final db = await database;
+    final res = await db.delete('Scans', where: 'id = ?', whereArgs: [id]);
+
+    return res;
+  }
+
+  Future<int> deleteAll() async {
+    final db = await database;
+    final res = await db.rawDelete('DELETE FROM Scans');
+
     return res;
   }
 }
