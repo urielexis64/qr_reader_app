@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:qrreaderapp/src/models/scan_model.dart';
 import 'package:qrreaderapp/src/pages/addresses_page.dart';
 import 'package:qrreaderapp/src/pages/maps_page.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:qrreaderapp/src/providers/db_provider.dart';
+import 'package:qrreaderapp/src/bloc/scans_bloc.dart';
+import 'package:qrreaderapp/utils/utils.dart' as utils;
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +14,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final scansBloc = new ScansBloc();
   int currentIndex = 0;
 
   @override
@@ -18,7 +23,9 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('QR Scanner'),
         actions: [
-          IconButton(icon: Icon(Icons.delete_forever), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.delete_forever),
+              onPressed: scansBloc.deleteAllScans),
         ],
       ),
       body: _callPage(currentIndex),
@@ -28,9 +35,7 @@ class _HomePageState extends State<HomePage> {
         child: Icon(
           Icons.filter_center_focus,
         ),
-        onPressed: () {
-          _qrScan();
-        },
+        onPressed: () => _qrScan(context),
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
@@ -62,14 +67,26 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _qrScan() async {
+  void _qrScan(BuildContext context) async {
     // https://hamburguesasflor.web.app/
     // https://maps.google.com/local?q=48.470797848595254,30.442688570805444
-    String futureString = 'https://hamburguesasflor.web.app/';
-
-    if (futureString != null) {
+    String futureString = await FlutterBarcodeScanner.scanBarcode(
+        '#ff8888', 'CANCEL', true, ScanMode.QR);
+    if (futureString != '-1') {
       final ScanModel newScan = ScanModel(value: futureString);
-      DBProvider.db.newScan(newScan);
+      scansBloc.addScan(newScan);
+
+      final ScanModel newScan2 =
+          ScanModel(value: '48.470797848595254,30.442688570805444');
+      scansBloc.addScan(newScan2);
+
+      if (Platform.isIOS) {
+        Future.delayed(Duration(milliseconds: 800), () {
+          utils.launchURL(context, newScan);
+        });
+      } else {
+        utils.launchURL(context, newScan);
+      }
     }
   }
 }
