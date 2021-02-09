@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qrreaderapp/src/pages/addresses_page.dart';
 import 'package:qrreaderapp/src/pages/maps_page.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:qrreaderapp/src/providers/db_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,7 +28,9 @@ class _HomePageState extends State<HomePage> {
         child: Icon(
           Icons.filter_center_focus,
         ),
-        onPressed: () {},
+        onPressed: () {
+          _qrScan();
+        },
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
@@ -55,6 +59,17 @@ class _HomePageState extends State<HomePage> {
         return AddressesPage();
       default:
         return MapsPage();
+    }
+  }
+
+  void _qrScan() async {
+    // https://hamburguesasflor.web.app/
+    // https://maps.google.com/local?q=48.470797848595254,30.442688570805444
+    String futureString = 'https://hamburguesasflor.web.app/';
+
+    if (futureString != null) {
+      final ScanModel newScan = ScanModel(value: futureString);
+      DBProvider.db.newScan(newScan);
     }
   }
 }
