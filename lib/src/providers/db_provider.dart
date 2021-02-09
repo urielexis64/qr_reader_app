@@ -32,4 +32,21 @@ class DBProvider {
           "CREATE TABLE Scans (id INTEGER PRIMARY KEY, type TEXT, value TEXT)");
     });
   }
+
+  //=========================INSERT=========================
+
+  newScanRaw(ScanModel newScan) async {
+    final db = await database;
+
+    final res = await db.rawInsert("INSERT INTO Scans "
+        "VALUES (${newScan.id}, '${newScan.type}', '${newScan.value}')");
+
+    return res;
+  }
+
+  newScan(ScanModel newScan) async {
+    final db = await database;
+    final res = db.insert('Scans', newScan.toJson());
+    return res;
+  }
 }
