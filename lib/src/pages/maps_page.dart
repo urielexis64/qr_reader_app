@@ -8,10 +8,15 @@ class MapsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    scansBloc.getScans();
+
     return StreamBuilder<List<ScanModel>>(
-      stream: scansBloc.scansStream,
-      builder: (BuildContext context, AsyncSnapshot<List<ScanModel>> snapshot) {
-        if (snapshot.hasData) {
+        stream: scansBloc.scansStream,
+        builder:
+            (BuildContext context, AsyncSnapshot<List<ScanModel>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
           final scans = snapshot.data;
 
           if (scans.length == 0) {
@@ -42,9 +47,6 @@ class MapsPage extends StatelessWidget {
                   ),
                 );
               });
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    );
+        });
   }
 }
