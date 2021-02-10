@@ -37,7 +37,7 @@ class MapsPage extends StatelessWidget {
                     color: Colors.redAccent,
                   ),
                   child: ListTile(
-                    leading: Icon(Icons.cloud),
+                    leading: Icon(Icons.map),
                     title: Text(scans[i].value),
                     subtitle: Text('ID: ${scans[i].id}'),
                     trailing: Icon(Icons.keyboard_arrow_right),
