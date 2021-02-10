@@ -44,4 +44,14 @@ class ScansBloc with Validators {
     await DBProvider.db.deleteAll();
     getScans();
   }
+
+  deleteAllMaps() async {
+    await DBProvider.db.deleteAllMaps();
+    getScans();
+  }
+
+  deleteAllAddresses() async {
+    await DBProvider.db.deleteAllAddresses();
+    getScans();
+  }
 }

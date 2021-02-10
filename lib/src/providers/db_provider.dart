@@ -103,4 +103,19 @@ class DBProvider {
 
     return res;
   }
+
+  Future<int> deleteAllMaps() async {
+    final db = await database;
+    final res = await db.delete('Scans', where: 'type = ?', whereArgs: ['geo']);
+
+    return res;
+  }
+
+  Future<int> deleteAllAddresses() async {
+    final db = await database;
+    final res =
+        await db.delete('Scans', where: 'type = ?', whereArgs: ['http']);
+
+    return res;
+  }
 }

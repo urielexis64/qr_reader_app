@@ -25,7 +25,13 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
               icon: Icon(Icons.delete_forever),
-              onPressed: scansBloc.deleteAllScans),
+              onPressed: () {
+                if (currentIndex == 0) {
+                  scansBloc.deleteAllMaps();
+                } else {
+                  scansBloc.deleteAllAddresses();
+                }
+              }),
         ],
       ),
       body: _callPage(currentIndex),
@@ -68,17 +74,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _qrScan(BuildContext context) async {
-    // https://hamburguesasflor.web.app/
-    // https://maps.google.com/local?q=48.470797848595254,30.442688570805444
     String futureString = await FlutterBarcodeScanner.scanBarcode(
         '#ff8888', 'CANCEL', true, ScanMode.QR);
     if (futureString != '-1') {
       final ScanModel newScan = ScanModel(value: futureString);
       scansBloc.addScan(newScan);
-
-      final ScanModel newScan2 =
-          ScanModel(value: '48.470797848595254,30.442688570805444');
-      scansBloc.addScan(newScan2);
 
       if (Platform.isIOS) {
         Future.delayed(Duration(milliseconds: 800), () {
