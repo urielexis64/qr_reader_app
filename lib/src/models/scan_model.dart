@@ -1,3 +1,5 @@
+import "package:latlong/latlong.dart";
+
 class ScanModel {
   int id;
   String type;
@@ -26,4 +28,11 @@ class ScanModel {
         "type": type,
         "value": value,
       };
+
+  getLatLng() {
+    final latLng = value.substring(4).split(',');
+    final lattitude = double.parse(latLng[0]);
+    final longitude = double.parse(latLng[1]);
+    return LatLng(lattitude, longitude);
+  }
 }
